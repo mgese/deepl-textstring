@@ -1,4 +1,5 @@
 import React, { createContext, FC, ReactNode, useEffect, useState } from 'react';
+import { TargetLanguageCode, Translator } from 'deepl-node';
 
 export type TextstringValue = {
     [key: string]: string;
@@ -12,24 +13,48 @@ export type TextstringProviderProps = {
      */
     children?: ReactNode;
     /**
+     * The deepl API key.
+     */
+    apiKey: string;
+    /**
      * The language that should be used.
      */
-    language: string;
+    language: TargetLanguageCode;
     /**
      * The name of the library.
      */
-    textstrings: { [key: string]: string };
+    textstrings: TextstringValue;
 };
 
-const TextstringProvider: FC<TextstringProviderProps> = ({ children, language }) => {
-    const [textstrings, setTextstrings] = useState<TextstringValue>({});
+const TextstringProvider: FC<TextstringProviderProps> = ({
+    children,
+    language,
+    textstrings,
+    apiKey
+}) => {
+    const [textstringValues, setTextstringValues] = useState<TextstringValue>({});
+
+    const translator = new Translator(apiKey);
 
     useEffect(() => {
-        // ToDo update Data if language is changed
-        setTextstrings({"test":"test"})
+        const loadTextstrings = () => {
+            const translated: TextstringValue = {};
+
+            for (const [key, value] of Object.entries(textstrings)) {
+                translator.translateText(value, null, language).then(result => {
+                    translated[key] = result.text;
+                });
+            }
+
+            setTextstringValues(translated);
+        };
+
+        loadTextstrings();
     }, [language]);
 
-    return <TextstringContext.Provider value={textstrings}>{children}</TextstringContext.Provider>;
+    return (
+        <TextstringContext.Provider value={textstringValues}>{children}</TextstringContext.Provider>
+    );
 };
 
 TextstringProvider.displayName = 'TextstringProvider';

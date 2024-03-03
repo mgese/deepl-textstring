@@ -2,6 +2,7 @@ import { Meta, StoryFn } from '@storybook/react';
 import { useMemo, useState } from 'react';
 import { Textstring, TextstringProvider } from '../src';
 import React from 'react';
+import { TargetLanguageCode } from 'deepl-node';
 
 const TEXTSTRINGS = {
     txt_default: 'Hallo Welt.',
@@ -17,17 +18,21 @@ export default {
 } as Meta<typeof Textstring>;
 
 const Template: StoryFn<typeof Textstring> = ({ ...args }) => {
-    const [language, setLanguage] = useState('de');
+    const [language, setLanguage] = useState<TargetLanguageCode>('de');
 
     return (
         <>
-            <TextstringProvider language={language} textstrings={TEXTSTRINGS}>
+            <TextstringProvider
+                language={language}
+                textstrings={TEXTSTRINGS}
+                apiKey={'19ABSjU5xjZNw6ob3'}
+            >
                 <Textstring {...args} />
             </TextstringProvider>
             <p>select language:</p>
             <div style={{ display: 'flex', gap: 8 }}>
                 <button onClick={() => setLanguage('de')}>German</button>
-                <button onClick={() => setLanguage('en')}>English</button>
+                <button onClick={() => setLanguage('en-GB')}>English</button>
                 <button onClick={() => setLanguage('nl')}>Dutch</button>
             </div>
         </>
@@ -35,13 +40,13 @@ const Template: StoryFn<typeof Textstring> = ({ ...args }) => {
 };
 
 const TextstringWithReplacementTemplate: StoryFn<typeof Textstring> = () => {
-    const [time, setTime] = useState('##food##');
-    const [language, setLanguage] = useState('de');
+    const [time, setTime] = useState('##time##');
+    const [language, setLanguage] = useState<TargetLanguageCode>('de');
 
     return useMemo(() => {
         return (
             <>
-                <TextstringProvider language={language} textstrings={TEXTSTRINGS}>
+                <TextstringProvider language={language} textstrings={TEXTSTRINGS} apiKey={''}>
                     <Textstring
                         childrenTagName="h1"
                         textstring={{
@@ -61,7 +66,7 @@ const TextstringWithReplacementTemplate: StoryFn<typeof Textstring> = () => {
                 <p>select language:</p>
                 <div style={{ display: 'flex', gap: 8 }}>
                     <button onClick={() => setLanguage('de')}>German</button>
-                    <button onClick={() => setLanguage('en')}>English</button>
+                    <button onClick={() => setLanguage('en-GB')}>English</button>
                     <button onClick={() => setLanguage('nl')}>Dutch</button>
                 </div>
             </>
