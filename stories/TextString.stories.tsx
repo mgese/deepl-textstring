@@ -25,7 +25,7 @@ const Template: StoryFn<typeof Textstring> = ({ ...args }) => {
             <TextstringProvider
                 language={language}
                 textstrings={TEXTSTRINGS}
-                apiKey={'19ABSjU5xjZNw6ob3'}
+                apiKey={''}
             >
                 <Textstring {...args} />
             </TextstringProvider>
